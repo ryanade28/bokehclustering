@@ -13,21 +13,21 @@ np.random.seed(0)
 
 
 
-# define some helper functions
+# Mendefinisikan algoritma algoritma library clustering
 def clustering(X, algorithm, n_clusters):
-    # normalize dataset for easier parameter selection
+    # Melakukan normalisasi pada dataset acak yang akan dibuat
     X = StandardScaler().fit_transform(X)
 
-    # estimate bandwidth for mean shift
+    # Estimasi bandwith untuk algoritma mean shift
     bandwidth = cluster.estimate_bandwidth(X, quantile=0.3)
 
-    # connectivity matrix for structured Ward
+    # Mendefinisikan korelasi matrix untuk struktur ward
     connectivity = kneighbors_graph(X, n_neighbors=10, include_self=False)
 
-    # make connectivity symmetric
+    # Membuat hubungan simetrik
     connectivity = 0.5 * (connectivity + connectivity.T)
 
-    # Generate the new colors:
+    # Mengaplikasikan algoritma algoritma library cluster
     if algorithm=='MiniBatchKMeans':
         model = cluster.MiniBatchKMeans(n_clusters=n_clusters)
 
@@ -65,16 +65,16 @@ def clustering(X, algorithm, n_clusters):
         model = cluster.KMeans(n_clusters=n_clusters,
                                random_state=0)
 
-
+    # Mengaplikasikan algoritma yang dipilih untuk dataset x
     model.fit(X)
-
+    
     if hasattr(model, 'labels_'):
             y_pred = model.labels_.astype(int)
     else:
             y_pred = model.predict(X)
 
     return X, y_pred
-
+# Fungsi untuk menentukan dataset yang akan digunakan
 def get_dataset(dataset, n_samples):
     if dataset == 'Noisy Circles':
         return datasets.make_circles(n_samples=n_samples,
@@ -100,7 +100,7 @@ def get_dataset(dataset, n_samples):
     elif dataset == "No Structure":
         return np.random.rand(n_samples, 2), None
 
-# set up initial data
+# setting parameter default
 n_samples = 1500
 n_clusters = 2
 algorithm = 'MiniBatchKMeans'
@@ -111,12 +111,12 @@ X, y_pred = clustering(X, algorithm, n_clusters)
 spectral = np.hstack([Spectral6] * 20)
 colors = [spectral[i] for i in y]
 
-# set up plot (styling in theme.yaml)
+# setting plot yang akan di gunakan
 plot = figure(toolbar_location=None, title=algorithm)
 source = ColumnDataSource(data=dict(x=X[:, 0], y=X[:, 1], colors=colors))
 plot.circle('x', 'y', fill_color='colors', line_color=None, source=source)
 
-# set up widgets
+# setting fitur bokeh yang akan digunakan (select)
 clustering_algorithms= [
     'MiniBatchKMeans',
     'AffinityPropagation',
@@ -162,7 +162,7 @@ clusters_slider = Slider(title="Number of clusters",
                          step=1,
                          width=400)
 
-# set up callbacks
+# prosedur update apabila algoritma diganti
 def update_algorithm_or_clusters(attrname, old, new):
     global X
 
@@ -176,6 +176,7 @@ def update_algorithm_or_clusters(attrname, old, new):
 
     plot.title.text = algorithm
 
+# prosedur update apabila jumlah dan ukuran dataset diganti    
 def update_samples_or_dataset(attrname, old, new):
     global X, y
 
@@ -196,10 +197,10 @@ clusters_slider.on_change('value_throttled', update_algorithm_or_clusters)
 dataset_select.on_change('value', update_samples_or_dataset)
 samples_slider.on_change('value_throttled', update_samples_or_dataset)
 
-# set up layout
+# setting layout
 selects = row(dataset_select, algorithm_select, width=420)
 inputs = column(selects, samples_slider, clusters_slider)
 
-# add to document
+# deploy
 curdoc().add_root(row(inputs, plot))
 curdoc().title = "Clustering"
