@@ -112,7 +112,7 @@ spectral = np.hstack([Spectral6] * 20)
 colors = [spectral[i] for i in y]
 
 # setting plot yang akan di gunakan
-plot = figure(toolbar_location=None, title=algorithm)
+plot = figure(toolbar_location="right", title=algorithm)
 source = ColumnDataSource(data=dict(x=X[:, 0], y=X[:, 1], colors=colors))
 plot.circle('x', 'y', fill_color='colors', line_color=None, source=source)
 
